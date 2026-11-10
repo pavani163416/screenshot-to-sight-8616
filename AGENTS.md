@@ -28,3 +28,5 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+Keep this single-page portfolio's content sections in the `/` route and theme tokens in `src/styles.css`; this preserves a clear marketing-page structure without unnecessary routes.
