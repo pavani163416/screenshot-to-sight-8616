@@ -628,7 +628,7 @@ export function Portfolio() {
             <p>React &amp; TypeScript developer · Websites, dashboards &amp; web applications</p>
           </div>
           <nav aria-label="Footer navigation">
-            <a href="#home" onClick={(event) => navigateToSection(event, "#home")}>Home</a>
+              <a href="#home" onClick={(event) => navigateToSection(event, "#home")}>Home</a>
             <a href="#services" onClick={(event) => navigateToSection(event, "#services")}>Services</a>
             <a href="#work" onClick={(event) => navigateToSection(event, "#work")}>Work</a>
             <a href="#about" onClick={(event) => navigateToSection(event, "#about")}>About</a>
