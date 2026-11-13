@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, type MouseEvent } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   ArrowDown,
@@ -174,7 +174,6 @@ export function Portfolio() {
   const [formMessage, setFormMessage] = useState("");
   const [formError, setFormError] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [headerHeight, setHeaderHeight] = useState(76);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -215,15 +214,14 @@ export function Portfolio() {
     }
   }
 
-  function navigateToSection(event: React.MouseEvent<HTMLAnchorElement>, href: string) {
+  function navigateToSection(event: MouseEvent<HTMLAnchorElement>, href: string) {
     if (!href.startsWith("#")) return;
     const target = document.querySelector<HTMLElement>(href);
     if (!target) return;
 
     event.preventDefault();
     const header = document.querySelector<HTMLElement>(".portfolio-header");
-    const nextHeaderHeight = header?.getBoundingClientRect().height ?? headerHeight;
-    setHeaderHeight(nextHeaderHeight);
+    const nextHeaderHeight = header?.getBoundingClientRect().height ?? 0;
     setMenuOpen(false);
     history.replaceState(null, "", href);
     window.scrollTo({
