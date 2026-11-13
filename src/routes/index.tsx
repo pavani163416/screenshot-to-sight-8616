@@ -374,7 +374,7 @@ export function Portfolio() {
                       <div className="portfolio-preview-content">
                         <span className="portfolio-preview-number">0{index + 1}</span>
                         <project.Icon aria-hidden="true" className="portfolio-preview-icon" />
-                        <span className="portfolio-preview-caption">Project screenshot coming soon</span>
+                      <span className="portfolio-preview-caption">Project preview area · Screenshot to come</span>
                       </div>
                     </div>
                   </div>
@@ -393,7 +393,7 @@ export function Portfolio() {
                         <li key={technology}>{technology}</li>
                       ))}
                     </ul>
-                    <span className="portfolio-project-note">Public links available on request</span>
+                    <span className="portfolio-project-note">Project links to be added when publicly available</span>
                   </div>
                 </article>
               ))}
