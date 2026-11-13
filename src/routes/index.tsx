@@ -180,7 +180,7 @@ function Portfolio() {
     setFormMessage("");
     setFormError("");
 
-    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
+    const accessKey = import.meta.env["VITE_WEB3FORMS_ACCESS_KEY"];
     if (!accessKey) {
       setFormError(
         "The inquiry form isn’t connected yet. Please email Pavani or message her on WhatsApp instead.",
@@ -189,7 +189,8 @@ function Portfolio() {
     }
 
     setSubmitting(true);
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
     formData.set("access_key", accessKey);
     formData.set("subject", "New freelance project inquiry for Pavani");
 
@@ -205,7 +206,7 @@ function Portfolio() {
       }
 
       setFormMessage("Thanks! Your project inquiry has been received. I’ll get back to you soon.");
-      event.currentTarget.reset();
+      form.reset();
     } catch {
       setFormError("Your inquiry couldn’t be sent right now. Please email Pavani or message her on WhatsApp.");
     } finally {
