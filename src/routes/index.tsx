@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, type MouseEvent } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   ArrowDown,
@@ -169,7 +169,7 @@ export const Route = createFileRoute("/")({
   component: Portfolio,
 });
 
-function Portfolio() {
+export function Portfolio() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [formMessage, setFormMessage] = useState("");
   const [formError, setFormError] = useState("");
@@ -180,7 +180,7 @@ function Portfolio() {
     setFormMessage("");
     setFormError("");
 
-    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
+    const accessKey = import.meta.env["VITE_WEB3FORMS_ACCESS_KEY"];
     if (!accessKey) {
       setFormError(
         "The inquiry form isn’t connected yet. Please email Pavani or message her on WhatsApp instead.",
@@ -189,7 +189,8 @@ function Portfolio() {
     }
 
     setSubmitting(true);
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
     formData.set("access_key", accessKey);
     formData.set("subject", "New freelance project inquiry for Pavani");
 
@@ -205,12 +206,28 @@ function Portfolio() {
       }
 
       setFormMessage("Thanks! Your project inquiry has been received. I’ll get back to you soon.");
-      event.currentTarget.reset();
+      form.reset();
     } catch {
       setFormError("Your inquiry couldn’t be sent right now. Please email Pavani or message her on WhatsApp.");
     } finally {
       setSubmitting(false);
     }
+  }
+
+  function navigateToSection(event: MouseEvent<HTMLAnchorElement>, href: string) {
+    if (!href.startsWith("#")) return;
+    const target = document.querySelector<HTMLElement>(href);
+    if (!target) return;
+
+    event.preventDefault();
+    const header = document.querySelector<HTMLElement>(".portfolio-header");
+    const nextHeaderHeight = header?.getBoundingClientRect().height ?? 0;
+    setMenuOpen(false);
+    history.replaceState(null, "", href);
+    window.scrollTo({
+      top: window.scrollY + target.getBoundingClientRect().top - nextHeaderHeight,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+    });
   }
 
   return (
@@ -223,7 +240,7 @@ function Portfolio() {
 
           <nav className="hidden items-center gap-8 md:flex" aria-label="Main navigation">
             {navigation.map((item) => (
-              <a className="portfolio-nav-link" href={item.href} key={item.href}>
+              <a className="portfolio-nav-link" href={item.href} key={item.href} onClick={(event) => navigateToSection(event, item.href)}>
                 {item.label}
               </a>
             ))}
@@ -234,12 +251,13 @@ function Portfolio() {
             className="hidden h-10 rounded-sm px-5 text-xs md:inline-flex"
             size="sm"
           >
-            <a href="#contact">
+            <a href="#contact" onClick={(event) => navigateToSection(event, "#contact")}>
               Start a project <ArrowUpRight aria-hidden="true" />
             </a>
           </Button>
 
           <Button
+            aria-controls="portfolio-mobile-nav"
             aria-expanded={menuOpen}
             aria-label={menuOpen ? "Close navigation" : "Open navigation"}
             className="md:hidden"
@@ -251,13 +269,13 @@ function Portfolio() {
           </Button>
         </div>
         {menuOpen && (
-          <nav className="portfolio-mobile-nav border-t border-border md:hidden" aria-label="Mobile navigation">
+          <nav className="portfolio-mobile-nav border-t border-border md:hidden" id="portfolio-mobile-nav" aria-label="Mobile navigation">
             {navigation.map((item) => (
-              <a href={item.href} key={item.href} onClick={() => setMenuOpen(false)}>
+              <a href={item.href} key={item.href} onClick={(event) => navigateToSection(event, item.href)}>
                 {item.label} <ArrowRight aria-hidden="true" />
               </a>
             ))}
-            <a href="#contact" onClick={() => setMenuOpen(false)}>
+            <a href="#contact" onClick={(event) => navigateToSection(event, "#contact")}>
               Start a project <ArrowUpRight aria-hidden="true" />
             </a>
           </nav>
@@ -279,12 +297,12 @@ function Portfolio() {
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <Button asChild className="h-12 rounded-sm px-6">
-                <a href="#contact">
+                <a href="#contact" onClick={(event) => navigateToSection(event, "#contact")}>
                   Start a project <ArrowUpRight aria-hidden="true" />
                 </a>
               </Button>
               <Button asChild className="h-12 rounded-sm px-6" variant="outline">
-                <a href="#work">
+                <a href="#work" onClick={(event) => navigateToSection(event, "#work")}>
                   View selected work <ArrowDown aria-hidden="true" />
                 </a>
               </Button>
@@ -373,7 +391,7 @@ function Portfolio() {
                       <div className="portfolio-preview-content">
                         <span className="portfolio-preview-number">0{index + 1}</span>
                         <project.Icon aria-hidden="true" className="portfolio-preview-icon" />
-                        <span className="portfolio-preview-caption">Project screenshot coming soon</span>
+                      <span className="portfolio-preview-caption">Project preview area · Screenshot to come</span>
                       </div>
                     </div>
                   </div>
@@ -392,7 +410,7 @@ function Portfolio() {
                         <li key={technology}>{technology}</li>
                       ))}
                     </ul>
-                    <span className="portfolio-project-note">Public links available on request</span>
+                    <span className="portfolio-project-note">Project links to be added when publicly available</span>
                   </div>
                 </article>
               ))}
@@ -606,15 +624,15 @@ function Portfolio() {
       <footer className="portfolio-footer">
         <div className="portfolio-container portfolio-footer-inner">
           <div>
-            <a className="portfolio-wordmark" href="#home">pavani<span>.</span></a>
+            <a className="portfolio-wordmark" href="#home" onClick={(event) => navigateToSection(event, "#home")}>pavani<span>.</span></a>
             <p>React &amp; TypeScript developer · Websites, dashboards &amp; web applications</p>
           </div>
           <nav aria-label="Footer navigation">
-            <a href="#home">Home</a>
-            <a href="#services">Services</a>
-            <a href="#work">Work</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
+              <a href="#home" onClick={(event) => navigateToSection(event, "#home")}>Home</a>
+            <a href="#services" onClick={(event) => navigateToSection(event, "#services")}>Services</a>
+            <a href="#work" onClick={(event) => navigateToSection(event, "#work")}>Work</a>
+            <a href="#about" onClick={(event) => navigateToSection(event, "#about")}>About</a>
+            <a href="#contact" onClick={(event) => navigateToSection(event, "#contact")}>Contact</a>
           </nav>
           <p className="portfolio-copyright">© 2026 Pavani. All rights reserved.</p>
         </div>
