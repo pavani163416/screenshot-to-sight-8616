@@ -257,6 +257,7 @@ export function Portfolio() {
           </Button>
 
           <Button
+            aria-controls="portfolio-mobile-nav"
             aria-expanded={menuOpen}
             aria-label={menuOpen ? "Close navigation" : "Open navigation"}
             className="md:hidden"
@@ -268,7 +269,7 @@ export function Portfolio() {
           </Button>
         </div>
         {menuOpen && (
-          <nav className="portfolio-mobile-nav border-t border-border md:hidden" aria-label="Mobile navigation">
+          <nav className="portfolio-mobile-nav border-t border-border md:hidden" id="portfolio-mobile-nav" aria-label="Mobile navigation">
             {navigation.map((item) => (
               <a href={item.href} key={item.href} onClick={(event) => navigateToSection(event, item.href)}>
                 {item.label} <ArrowRight aria-hidden="true" />
