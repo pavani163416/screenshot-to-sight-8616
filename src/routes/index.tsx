@@ -169,7 +169,7 @@ export const Route = createFileRoute("/")({
   component: Portfolio,
 });
 
-function Portfolio() {
+export function Portfolio() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [formMessage, setFormMessage] = useState("");
   const [formError, setFormError] = useState("");
