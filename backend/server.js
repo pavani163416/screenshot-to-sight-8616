@@ -65,6 +65,9 @@ app.use("/api/inquiries", inquiryRoutes);
 // Admin Routes (Login, Dashboard, Inquiries Management)
 app.use("/api/admin", adminRoutes);
 
+// Serve static admin dashboard from the admin folder
+app.use("/admin", express.static(path.resolve(__dirname, "../admin")));
+
 // Global Error Handler
 app.use((err, _req, res, _next) => {
   console.error("Server Error:", err);
