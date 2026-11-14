@@ -1,26 +1,66 @@
-# Screenshot To Sight
+# Addepalli Pavani — Full-Stack Developer Portfolio
 
-Implement exactly the screenshot and nothing else
+A modern, high-performance, dark futuristic glassmorphism developer portfolio with live MongoDB Atlas integration.
 
-This project was built with [Lovable](https://lovable.dev).
+## Project Architecture
 
-**Live app**: https://screenshot-to-sight-8616.lovable.app
+This repository is organized into two dedicated folders:
 
-## Build with Lovable
+```text
+screenshot-to-sight-8616/
+├── frontend/             # Single-Page Application (React 19, TypeScript, Vite, Tailwind CSS v4, Three.js)
+│   ├── src/              # Application routes, components, styles, and assets
+│   ├── public/           # Static assets & official PDF resume
+│   ├── package.json      # Frontend dependencies & scripts
+│   └── vite.config.ts    # Vite & Nitro configuration
+│
+├── backend/              # Node.js + Express API service connected to MongoDB Atlas
+│   ├── models/           # Mongoose schemas (Inquiry)
+│   ├── routes/           # REST endpoints (/api/inquiries, /api/health)
+│   ├── seed.js           # Database seeding script for portfolio details
+│   ├── server.js         # Express server entry point
+│   └── package.json      # Backend dependencies
+│
+└── package.json          # Root workspace scripts to manage both services
+```
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/b0dc66a8-df0d-40ae-aa4c-341b834b5e32).
+## Quick Start
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+### 1. Install Dependencies
+```bash
+# Install frontend dependencies
+npm --prefix frontend install
 
-## Development
+# Install backend dependencies
+npm --prefix backend install
+```
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+### 2. Configure Environment
+- Copy `frontend/.env.example` to `frontend/.env`:
+  ```env
+  VITE_API_URL=http://localhost:5000
+  ```
+- Copy `backend/.env.example` to `backend/.env` and add your MongoDB Atlas URI:
+  ```env
+  PORT=5000
+  MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.hstff3y.mongodb.net/my_portfolio?retryWrites=true&w=majority
+  FRONTEND_URL=http://localhost:8080
+  ```
 
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+### 3. Run Locally
+```bash
+# Run frontend dev server (port 8080)
 npm run dev
+
+# Run backend API server (port 5000)
+npm run start
+```
+
+### 4. Run Tests & Production Build
+```bash
+# Run Vitest test suite
+npm test
+
+# Build production bundle
+npm run build
 ```
