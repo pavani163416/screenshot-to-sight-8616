@@ -1294,6 +1294,10 @@ export function Portfolio() {
               Contact
             </a>
             <span className="text-slate-700">|</span>
+            <a href="/admin" className="hover:text-emerald-400 text-slate-400 hover:text-white transition-colors">
+              Admin
+            </a>
+            <span className="text-slate-700">|</span>
             <a
               href="https://github.com/pavani163416"
               target="_blank"

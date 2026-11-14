@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import inquiryRoutes from "./routes/inquiryRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(__dirname, ".env") });
@@ -60,6 +61,9 @@ app.get("/api/health", (_req, res) => {
 
 // Inquiry Routes
 app.use("/api/inquiries", inquiryRoutes);
+
+// Admin Routes (Login, Dashboard, Inquiries Management)
+app.use("/api/admin", adminRoutes);
 
 // Global Error Handler
 app.use((err, _req, res, _next) => {
