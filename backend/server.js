@@ -18,14 +18,26 @@ const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:8080";
 const allowedOrigins = [
   "http://localhost:8080",
   "http://127.0.0.1:8080",
-  FRONTEND_URL,
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "http://localhost:3000",
+  "https://addepallipavani-portfolio.vercel.app",
+  ...(FRONTEND_URL ? FRONTEND_URL.split(",").map((url) => url.trim()) : []),
 ].filter(Boolean);
 
 app.use(
   cors({
     origin: (origin, callback) => {
       // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
-      if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes("*")) {
+      if (!origin) return callback(null, true);
+
+      // Check against explicit list, wildcard, or any Vercel deployment
+      if (
+        allowedOrigins.includes(origin) ||
+        allowedOrigins.includes("*") ||
+        process.env.FRONTEND_URL === "*" ||
+        origin.endsWith(".vercel.app")
+      ) {
         return callback(null, true);
       }
       return callback(new Error(`CORS policy does not allow access from origin ${origin}`), false);
