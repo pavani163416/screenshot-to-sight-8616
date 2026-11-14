@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
+    "build": "node -e \"console.log('Backend build ready')\"",
     "seed": "node seed.js"
   },
   "dependencies": {
@@ -14,6 +15,6 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "mongoose": "^8.9.5",
-    "zod": "^3.24.1"
+    "zod": "^4.6.7"
   }
 }
