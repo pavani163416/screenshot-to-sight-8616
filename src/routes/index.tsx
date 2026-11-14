@@ -1,5 +1,6 @@
-import { useState, type FormEvent, type MouseEvent } from "react";
+import { useState, useEffect, type FormEvent, type MouseEvent } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import Lenis from "lenis";
 import {
   ArrowDown,
   ArrowRight,
@@ -8,128 +9,188 @@ import {
   Check,
   ChevronDown,
   Code2,
+  Copy,
+  FileDown,
   FolderKanban,
+  Github,
+  GraduationCap,
   Layers3,
+  Linkedin,
+  Loader2,
   Mail,
   Menu,
   MessageCircle,
   MonitorSmartphone,
+  Send,
   Sparkles,
+  Terminal,
   X,
+  Eye,
+  Images,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import editorialStillLife from "@/assets/pavani-editorial-still-life.jpg";
+import { ThreeHeroScene } from "@/components/ThreeHeroScene";
+import { CursorGlow } from "@/components/CursorGlow";
+import { TiltCard } from "@/components/TiltCard";
+import { MagneticButton } from "@/components/MagneticButton";
+import { ProjectModal, type ProjectData } from "@/components/ProjectModal";
+import portraitPhoto from "@/assets/pavani-portrait.jpg";
 
 const navigation = [
+  { label: "Selected Work", href: "#work" },
   { label: "Services", href: "#services" },
-  { label: "Selected work", href: "#work" },
-  { label: "About", href: "#about" },
+  { label: "Tech Stack", href: "#stack" },
+  { label: "Experience", href: "#about" },
   { label: "Process", href: "#process" },
 ];
 
-const projects = [
+const projects: ProjectData[] = [
   {
     name: "Athithigriha",
-    category: "Hotel management · Web application",
+    category: "Hotel Management · Web Application",
     description:
-      "A hotel management application bringing day-to-day operations and workflows into one considered digital experience.",
+      "A complete hotel operations platform uniting booking management, front-desk check-ins, room inventory, and guest-to-team pipelines in a responsive management experience.",
     contribution:
-      "Responsive interfaces, dashboards, management screens, forms and guest-to-team workflows.",
-    technologies: ["React", "TypeScript", "MUI", "Responsive UI"],
-    Icon: BriefcaseBusiness,
-    tone: "olive",
+      "Engineered full responsive interfaces, operations dashboards, multi-step booking forms, and state-managed guest pipelines in React, TypeScript, and MUI.",
+    technologies: ["React", "TypeScript", "MUI", "Responsive UI", "REST APIs"],
+    badge: "Operations Platform",
+    accent: "emerald",
   },
   {
     name: "NapLabs",
-    category: "Business operations · Platform",
+    category: "Business Operations · Platform",
     description:
-      "A centralized business operations platform designed to make everyday workflows easier to manage.",
+      "A centralized business management platform designed to automate everyday team operations, order tracking, and cross-department collaboration with real-time updates.",
     contribution:
-      "Product interfaces, management workflows, authentication UI and API-connected responsive screens.",
-    technologies: ["React", "TypeScript", "JavaScript", "API integration"],
-    Icon: Layers3,
-    tone: "stone",
+      "Built sleek product interfaces, authentication UI, role-based management screens, and API-connected responsive workflows.",
+    technologies: ["React", "TypeScript", "JavaScript", "REST APIs", "Tailwind CSS"],
+    badge: "SaaS Application",
+    accent: "cyan",
   },
   {
     name: "PriceWise AI",
-    category: "AI application · Product discovery",
+    category: "AI Application · Product Discovery",
     description:
-      "A price-comparison concept that helps shoppers explore product options and make more informed decisions.",
+      "An intelligent e-commerce price-comparison web application that helps shoppers evaluate options across stores, analyze pricing trends, and make smart buying choices.",
     contribution:
-      "Product search, side-by-side comparison and clear, approachable results experiences.",
-    technologies: ["React", "JavaScript", "API integration", "AI"],
-    Icon: Sparkles,
-    tone: "coral",
+      "Developed dynamic product search interfaces, side-by-side comparison tables, filter controls, and clean responsive results layouts.",
+    technologies: ["React", "JavaScript", "AI Workflows", "REST APIs"],
+    badge: "AI Product",
+    accent: "violet",
   },
   {
     name: "E-Khatha",
-    category: "Property services · Web application",
+    category: "Property Services · Web Application",
     description:
-      "A digital property and document platform focused on making information and processes simpler to navigate.",
+      "A digital property and official documentation portal built to streamline real-estate records, application tracking, and verification procedures for public access.",
     contribution:
-      "Responsive screens, dashboards, forms and clear end-to-end user workflows.",
-    technologies: ["React", "TypeScript", "MUI", "JavaScript"],
-    Icon: FolderKanban,
-    tone: "blue",
+      "Designed responsive screens, document submission dashboards, multi-step verification forms, and end-to-end user workflows.",
+    technologies: ["React", "TypeScript", "MUI", "JavaScript", "Responsive UI"],
+    badge: "Civic Portal",
+    accent: "emerald",
   },
 ];
 
 const services = [
   {
     number: "01",
-    name: "Business websites",
-    description: "Thoughtful, responsive websites for growing companies and local businesses.",
+    name: "Business Websites",
+    description:
+      "High-performance, responsive websites built to clearly communicate your brand, load quickly, and convert prospective clients.",
   },
   {
     number: "02",
-    name: "React web applications",
-    description: "Custom digital products built around the way your team and customers work.",
+    name: "React Web Applications",
+    description:
+      "Custom digital products and single-page applications engineered with React 19, TypeScript, clean component architecture, and solid state management.",
   },
   {
     number: "03",
-    name: "Admin dashboards",
-    description: "Clear, useful interfaces for customer, employee, order and operations data.",
+    name: "Admin Dashboards",
+    description:
+      "Information-dense, clean interfaces for managing customer data, internal orders, operations pipelines, and live business analytics.",
   },
   {
     number: "04",
-    name: "Management portals",
-    description: "Responsive, role-aware portals that bring business workflows together.",
+    name: "Management Portals",
+    description:
+      "Role-aware, multi-tenant digital portals consolidating scattered spreadsheets, employee tasks, and disconnected software into one reliable system.",
   },
   {
     number: "05",
-    name: "Website redesigns",
-    description: "A more current and usable experience for an existing website or product.",
+    name: "Website Redesigns",
+    description:
+      "Complete visual and architectural overhauls elevating legacy web apps into modern, fluid, accessible, and high-performance digital experiences.",
   },
   {
     number: "06",
-    name: "Frontend development",
-    description: "Reusable React and TypeScript interfaces built to work across screens.",
+    name: "Frontend Development",
+    description:
+      "Translating Figma or wireframe designs into clean, accessible, and maintainable React and TypeScript code built to scale over time.",
   },
   {
     number: "07",
-    name: "Fixes & improvements",
-    description: "Practical help with UI bugs, layout issues and responsive polish.",
+    name: "Fixes & Code Polish",
+    description:
+      "Targeted troubleshooting for UI glitches, responsive breakpoint flaws, component state bugs, and client-side rendering bottlenecks.",
   },
 ];
 
-const skillGroups = [
+const skillBento = [
   {
-    title: "Frontend",
-    details: "React · TypeScript · JavaScript · HTML5 · CSS3 · MUI · Tailwind CSS",
+    category: "Frontend Core",
+    icon: Code2,
+    badge: "Core Focus",
+    skills: ["React", "TypeScript", "JavaScript (ES6+)", "Tailwind CSS", "HTML5 & CSS3", "MUI", "Radix UI", "Responsive Design"],
+    highlight: "Type-safe interfaces, reusable patterns, accessibility & performance",
   },
-  { title: "Backend & data", details: "Node.js · Python · Flask · REST APIs · SQL · MongoDB" },
-  { title: "AI & analytics", details: "YOLOv5 · EasyOCR · FAISS · RAG · Power BI · Tableau" },
-  { title: "Tools & languages", details: "Git · GitHub · Vite · VS Code · Python · Java · C · C++" },
+  {
+    category: "Backend & Data",
+    icon: Terminal,
+    badge: "Full-Stack Integration",
+    skills: ["Node.js", "Express.js", "MongoDB", "Mongoose", "REST APIs", "SQL", "Flask", "Python"],
+    highlight: "REST API design, data modeling, schema validation & persistence",
+  },
+  {
+    category: "AI & Data Analytics",
+    icon: Sparkles,
+    badge: "B.Tech Specialization",
+    skills: ["YOLOv5", "EasyOCR", "FAISS", "RAG Concepts", "Power BI", "Tableau", "Data Pipelines"],
+    highlight: "Computer vision, retrieval-augmented workflows & analytical dashboards",
+  },
+  {
+    category: "Engineering Tools",
+    icon: MonitorSmartphone,
+    badge: "Workflow",
+    skills: ["Git & GitHub", "Vite", "VS Code", "Postman", "Vitest", "Chrome DevTools", "C / C++", "Java"],
+    highlight: "CI/CD familiarity, modern dev tools & unit testing",
+  },
 ];
 
 const processSteps = [
-  { number: "01", title: "Discover", detail: "Understand your business, your people and what needs to change." },
-  { number: "02", title: "Plan", detail: "Agree on the scope, structure and the right features to begin with." },
-  { number: "03", title: "Build", detail: "Shape the experience and develop it with care, screen by screen." },
-  { number: "04", title: "Launch", detail: "Test, deploy and hand over a product ready for real use." },
+  {
+    number: "01",
+    title: "Scope & Discovery",
+    detail: "Clarify user requirements, business goals, feature requirements, and technical constraints.",
+  },
+  {
+    number: "02",
+    title: "Architect & Plan",
+    detail: "Define the UI component hierarchy, API interfaces, data models, and interaction patterns.",
+  },
+  {
+    number: "03",
+    title: "Develop with Care",
+    detail: "Build pixel-perfect, accessible, and type-safe interfaces with responsive polish on all devices.",
+  },
+  {
+    number: "04",
+    title: "Verify & Launch",
+    detail: "Thorough testing, cross-browser verification, and seamless handoff for live production deployment.",
+  },
 ];
 
 const projectTypes = [
@@ -147,23 +208,22 @@ const budgets = ["Under ₹10,000", "₹10,000–₹25,000", "₹25,000–₹50,
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Pavani — React & TypeScript Developer for Growing Businesses" },
+      { title: "Addepalli Pavani — React & TypeScript Developer | Portfolio" },
       {
         name: "description",
         content:
-          "Freelance React and TypeScript development for businesses: responsive websites, web applications, dashboards and management portals by Pavani.",
+          "Portfolio of Addepalli Pavani: React & TypeScript frontend engineer building high-performance web applications, business dashboards, and responsive digital products.",
       },
       {
         property: "og:title",
-        content: "Pavani — Websites & Web Applications for Growing Businesses",
+        content: "Addepalli Pavani — React & TypeScript Developer",
       },
       {
         property: "og:description",
         content:
-          "Practical, responsive digital products for businesses, startups and growing teams. Explore Pavani’s work and start a project.",
+          "Practical, high-motion digital products for businesses and growing teams. Explore Addepalli Pavani’s selected work, skills, and interactive experience.",
       },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Portfolio,
@@ -174,41 +234,102 @@ export function Portfolio() {
   const [formMessage, setFormMessage] = useState("");
   const [formError, setFormError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+  const [selectedProject, setSelectedProject] = useState<ProjectData | null>(null);
+  const [emailCopied, setEmailCopied] = useState(false);
+
+  function handleCopyEmail(e?: MouseEvent) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText("addepallipavani4@gmail.com");
+      setEmailCopied(true);
+      setTimeout(() => setEmailCopied(false), 2500);
+    }
+  }
+
+  // Initialize Lenis for smooth momentum scrolling
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof ResizeObserver === "undefined") return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const lenis = new Lenis({
+      duration: 1.1,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
+
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    const rafId = requestAnimationFrame(raf);
+
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", handleScroll);
+      lenis.destroy();
+    };
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setFormMessage("");
     setFormError("");
 
-    const accessKey = import.meta.env["VITE_WEB3FORMS_ACCESS_KEY"];
-    if (!accessKey) {
-      setFormError(
-        "The inquiry form isn’t connected yet. Please email Pavani or message her on WhatsApp instead.",
-      );
-      return;
-    }
-
     setSubmitting(true);
     const form = event.currentTarget;
     const formData = new FormData(form);
-    formData.set("access_key", accessKey);
-    formData.set("subject", "New freelance project inquiry for Pavani");
+
+    const payload = {
+      name: String(formData.get("name") || "").trim(),
+      email: String(formData.get("email") || "").trim(),
+      project_type: String(formData.get("project_type") || ""),
+      budget_range: String(formData.get("budget_range") || ""),
+      phone: String(formData.get("phone") || "").trim(),
+      message: String(formData.get("message") || "").trim(),
+    };
+
+    const apiBaseUrl = import.meta.env["VITE_API_URL"] || "http://localhost:5000";
 
     try {
-      const response = await fetch("https://api.web3forms.com/submit", {
+      const response = await fetch(`${apiBaseUrl}/api/inquiries`, {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       });
-      const result = (await response.json()) as { success?: boolean };
 
-      if (!response.ok || !result.success) {
-        throw new Error("The form could not be submitted.");
+      const result = (await response.json().catch(() => null)) as {
+        success?: boolean;
+        message?: string;
+      } | null;
+
+      if (!response.ok || !result?.success) {
+        throw new Error(result?.message || "The inquiry couldn't be sent right now.");
       }
 
-      setFormMessage("Thanks! Your project inquiry has been received. I’ll get back to you soon.");
+      setFormMessage(
+        result.message || "Thanks! Your project inquiry has been received. I’ll get back to you soon.",
+      );
       form.reset();
-    } catch {
-      setFormError("Your inquiry couldn’t be sent right now. Please email Pavani or message her on WhatsApp.");
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error && err.message && err.message !== "Failed to fetch"
+          ? err.message
+          : "Your inquiry couldn't be sent right now. Please try again or reach out on WhatsApp/Email.";
+      setFormError(message);
     } finally {
       setSubmitting(false);
     }
@@ -220,423 +341,1006 @@ export function Portfolio() {
     if (!target) return;
 
     event.preventDefault();
-    const header = document.querySelector<HTMLElement>(".portfolio-header");
-    const nextHeaderHeight = header?.getBoundingClientRect().height ?? 0;
     setMenuOpen(false);
     history.replaceState(null, "", href);
-    window.scrollTo({
-      top: window.scrollY + target.getBoundingClientRect().top - nextHeaderHeight,
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
-    });
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
+  // Portrait parallax
+  const portraitParallaxY = Math.min(Math.max(-scrollY * 0.12, -75), 0);
+
   return (
-    <div className="portfolio-shell min-h-screen bg-background text-foreground">
-      <header className="portfolio-header sticky top-0 z-50 border-b border-border/80 bg-background/95 backdrop-blur-sm">
-        <div className="portfolio-container flex h-[4.75rem] items-center justify-between gap-5">
-          <a className="portfolio-wordmark" href="#home" aria-label="Pavani, back to home">
-            pavani<span>.</span>
+    <div className="relative min-h-screen futuristic-obsidian-bg cyber-grid-overlay text-slate-100 selection:bg-emerald-500 selection:text-black antialiased">
+      {/* Interactive Cursor Spotlight Glow */}
+      <CursorGlow />
+
+      {/* Floating Glassmorphic Navbar with updated name */}
+      <header className="fixed top-4 inset-x-0 z-50 flex justify-center px-4">
+        <nav className="glass-navbar flex items-center justify-between gap-6 rounded-full px-6 py-3 shadow-2xl max-w-4xl w-full">
+          <a
+            href="#home"
+            onClick={(e) => navigateToSection(e, "#home")}
+            className="flex items-center gap-2 font-display text-xl sm:text-2xl tracking-wider text-white hover:text-emerald-400 transition-colors"
+          >
+            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+            Addepalli Pavani<span className="text-emerald-400">.</span>
           </a>
 
-          <nav className="hidden items-center gap-8 md:flex" aria-label="Main navigation">
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
             {navigation.map((item) => (
-              <a className="portfolio-nav-link" href={item.href} key={item.href} onClick={(event) => navigateToSection(event, item.href)}>
+              <a
+                key={item.href}
+                href={item.href}
+                onClick={(e) => navigateToSection(e, item.href)}
+                className="hover:text-emerald-400 transition-colors duration-200"
+              >
                 {item.label}
               </a>
             ))}
-          </nav>
+          </div>
 
-          <Button
-            asChild
-            className="hidden h-10 rounded-sm px-5 text-xs md:inline-flex"
-            size="sm"
-          >
-            <a href="#contact" onClick={(event) => navigateToSection(event, "#contact")}>
-              Start a project <ArrowUpRight aria-hidden="true" />
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            <a
+              href="https://github.com/pavani163416"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center justify-center h-9 w-9 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/15 transition-all hover:scale-110 shadow-sm"
+              aria-label="GitHub Profile"
+              title="GitHub Profile (pavani163416)"
+            >
+              <Github className="h-5 w-5 text-white" />
             </a>
-          </Button>
+            <a
+              href="https://www.linkedin.com/in/addepalli-pavani-671b1b23a"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center justify-center h-9 w-9 rounded-full bg-[#0a66c2]/25 hover:bg-[#0a66c2]/40 text-[#38bdf8] hover:text-white border border-[#0a66c2]/40 transition-all hover:scale-110 shadow-sm"
+              aria-label="LinkedIn Profile"
+              title="LinkedIn Profile"
+            >
+              <Linkedin className="h-5 w-5 text-[#38bdf8]" />
+            </a>
+            <a
+              href="/assets/Addepalli_Pavani_Resume.pdf"
+              download="Addepalli_Pavani_Resume.pdf"
+              target="_blank"
+              rel="noreferrer"
+              className="hidden lg:inline-flex items-center gap-1.5 text-xs font-mono px-3 py-1.5 rounded-full bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/35 text-emerald-300 transition-all hover:scale-105 shadow-sm font-semibold"
+              title="Download Resume (PDF)"
+            >
+              <FileDown className="h-4 w-4 text-emerald-400" />
+              <span>Resume</span>
+            </a>
+            <MagneticButton
+              href="#contact"
+              onClick={(e) => navigateToSection(e, "#contact")}
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 text-black px-4 py-1.5 text-xs font-semibold tracking-wide shadow-lg shadow-emerald-500/25 transition-all hover:scale-105"
+            >
+              Start Project <ArrowUpRight className="h-3.5 w-3.5" />
+            </MagneticButton>
 
-          <Button
-            aria-controls="portfolio-mobile-nav"
-            aria-expanded={menuOpen}
-            aria-label={menuOpen ? "Close navigation" : "Open navigation"}
-            className="md:hidden"
-            onClick={() => setMenuOpen((open) => !open)}
-            size="icon"
-            variant="ghost"
-          >
-            {menuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
-          </Button>
-        </div>
-        {menuOpen && (
-          <nav className="portfolio-mobile-nav border-t border-border md:hidden" id="portfolio-mobile-nav" aria-label="Mobile navigation">
-            {navigation.map((item) => (
-              <a href={item.href} key={item.href} onClick={(event) => navigateToSection(event, item.href)}>
-                {item.label} <ArrowRight aria-hidden="true" />
-              </a>
-            ))}
-            <a href="#contact" onClick={(event) => navigateToSection(event, "#contact")}>
-              Start a project <ArrowUpRight aria-hidden="true" />
-            </a>
-          </nav>
-        )}
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="md:hidden text-slate-300 hover:text-white p-1"
+              aria-label="Toggle navigation"
+            >
+              {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
+        </nav>
       </header>
 
-      <main>
-        <section className="portfolio-container portfolio-hero" id="home">
-          <div className="portfolio-hero-copy">
-            <p className="portfolio-kicker">
-              <span aria-hidden="true" /> Independent developer · Taking on select projects
-            </p>
-            <h1>
-              Websites &amp; digital products, <em>built around your business.</em>
-            </h1>
-            <p className="portfolio-hero-lede">
-              I help businesses turn ideas and everyday workflows into responsive websites,
-              dashboards and web applications with React and TypeScript.
-            </p>
-            <div className="flex flex-wrap items-center gap-3">
-              <Button asChild className="h-12 rounded-sm px-6">
-                <a href="#contact" onClick={(event) => navigateToSection(event, "#contact")}>
-                  Start a project <ArrowUpRight aria-hidden="true" />
-                </a>
-              </Button>
-              <Button asChild className="h-12 rounded-sm px-6" variant="outline">
-                <a href="#work" onClick={(event) => navigateToSection(event, "#work")}>
-                  View selected work <ArrowDown aria-hidden="true" />
-                </a>
-              </Button>
-            </div>
-            <p className="portfolio-hero-caption">
-              React &amp; TypeScript development <span>·</span> India, working worldwide
-            </p>
+      {/* Mobile Drawer */}
+      {menuOpen && (
+        <div className="fixed inset-0 z-40 bg-black/95 backdrop-blur-2xl flex flex-col justify-center items-center gap-6 text-xl md:hidden">
+          {navigation.map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              onClick={(e) => navigateToSection(e, item.href)}
+              className="text-slate-200 hover:text-emerald-400 font-medium tracking-wide"
+            >
+              {item.label}
+            </a>
+          ))}
+          <div className="flex items-center gap-4 pt-2">
+            <a
+              href="https://github.com/pavani163416"
+              target="_blank"
+              rel="noreferrer"
+              className="text-slate-300 hover:text-white p-2 rounded-full bg-white/5 border border-white/10"
+              aria-label="GitHub"
+            >
+              <Github className="h-5 w-5" />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/addepalli-pavani-671b1b23a"
+              target="_blank"
+              rel="noreferrer"
+              className="text-emerald-400 hover:text-emerald-300 p-2 rounded-full bg-emerald-500/10 border border-emerald-500/30"
+              aria-label="LinkedIn"
+            >
+              <Linkedin className="h-5 w-5" />
+            </a>
+            <a
+              href="/assets/Addepalli_Pavani_Resume.pdf"
+              download="Addepalli_Pavani_Resume.pdf"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs font-mono text-slate-300 p-2 px-3 rounded-full bg-white/5 border border-white/10"
+            >
+              <FileDown className="h-4 w-4" /> Resume PDF
+            </a>
           </div>
-          <div className="portfolio-hero-image-wrap">
-            <img
-              alt="A laptop with a blank screen in a calm, sculptural studio setting"
-              className="portfolio-hero-image"
-              height={1152}
-              src={editorialStillLife}
-              width={960}
-            />
-            <div className="portfolio-image-caption">
-              <span>Thoughtful by design.</span>
-              <span>Useful by nature.</span>
-            </div>
-            <div className="portfolio-image-index" aria-hidden="true">
-              P<span>·</span>01
-            </div>
-          </div>
-        </section>
-
-        <div className="portfolio-proof-band" aria-label="Areas of focus">
-          <div className="portfolio-container portfolio-proof-inner">
-            <span>Made for growing businesses</span>
-            <span>Websites</span>
-            <span>Dashboards</span>
-            <span>Web applications</span>
-            <span>Responsive by default</span>
-          </div>
+          <a
+            href="#contact"
+            onClick={(e) => navigateToSection(e, "#contact")}
+            className="rounded-full bg-emerald-500 text-black px-7 py-3 font-semibold text-sm mt-2 shadow-xl"
+          >
+            Start a project
+          </a>
         </div>
+      )}
 
-        <section className="portfolio-section portfolio-container" id="services">
-          <div className="portfolio-section-heading">
-            <div>
-              <p className="portfolio-eyebrow">How I can help</p>
-              <h2>Digital work that <em>works harder.</em></h2>
-            </div>
-            <p>
-              From your first website to the dashboard your team relies on, I build digital
-              experiences around real needs—not features for their own sake.
-            </p>
-          </div>
-          <div className="portfolio-services-grid">
-            {services.map((service) => (
-              <article className="portfolio-service" key={service.number}>
-                <span className="portfolio-service-number">{service.number}</span>
-                <h3>{service.name}</h3>
-                <p>{service.description}</p>
-              </article>
-            ))}
-          </div>
-        </section>
+      {/* MAIN CONTENT */}
+      <main id="home" className="relative z-10 pt-28">
+        {/* ASYMMETRIC HERO SECTION WITH FLUID 3D CYBER WAVE BACKGROUND */}
+        <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8 py-16">
+          {/* New Fluid 3D Wave Canvas (undulating in background, zero text obstruction) */}
+          <ThreeHeroScene />
 
-        <section className="portfolio-work-band" id="work">
-          <div className="portfolio-container portfolio-section">
-            <div className="portfolio-section-heading portfolio-work-heading">
-              <div>
-                <p className="portfolio-eyebrow">A few things I’ve worked on</p>
-                <h2>Selected <em>work.</em></h2>
-              </div>
-              <p>
-                A mix of business platforms and product ideas—each shaped around clearer workflows
-                and useful, responsive interfaces.
-              </p>
-            </div>
-
-            <div className="portfolio-project-list">
-              {projects.map((project, index) => (
-                <article className="portfolio-project" key={project.name}>
-                  <div
-                    className={`portfolio-project-preview portfolio-project-preview--${project.tone}`}
-                    aria-label={`${project.name} project screenshot coming soon`}
-                  >
-                    <div className="portfolio-preview-window">
-                      <div className="portfolio-preview-chrome" aria-hidden="true">
-                        <span />
-                        <span />
-                        <span />
-                        <div className="portfolio-preview-address" />
-                      </div>
-                      <div className="portfolio-preview-content">
-                        <span className="portfolio-preview-number">0{index + 1}</span>
-                        <project.Icon aria-hidden="true" className="portfolio-preview-icon" />
-                      <span className="portfolio-preview-caption">Project preview area · Screenshot to come</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="portfolio-project-copy">
-                    <p className="portfolio-project-category">{project.category}</p>
-                    <div className="portfolio-project-title-row">
-                      <h3>{project.name}</h3>
-                      <span className="portfolio-project-index">0{index + 1}</span>
-                    </div>
-                    <p className="portfolio-project-description">{project.description}</p>
-                    <p className="portfolio-project-contribution">
-                      <strong>My contribution</strong> {project.contribution}
-                    </p>
-                    <ul className="portfolio-tech-list" aria-label={`${project.name} technologies`}>
-                      {project.technologies.map((technology) => (
-                        <li key={technology}>{technology}</li>
-                      ))}
-                    </ul>
-                    <span className="portfolio-project-note">Project links to be added when publicly available</span>
-                  </div>
-                </article>
-              ))}
-            </div>
-            <p className="portfolio-confidential-note">
-              Professional work is presented at a high level; confidential systems and company
-              materials are not shared here.
-            </p>
-          </div>
-        </section>
-
-        <section className="portfolio-section portfolio-container" id="about">
-          <div className="portfolio-about-layout">
-            <div className="portfolio-about-intro">
-              <p className="portfolio-eyebrow">A little about me</p>
-              <h2>Good technology starts with <em>understanding people.</em></h2>
-              <p>
-                I’m Pavani, a developer who brings technical thinking and business context together
-                to make software clear, responsive and genuinely useful. My focus is React and
-                TypeScript, backed by full-stack experience and a curiosity for AI and data.
-              </p>
-              <p>
-                I’ve built enterprise interfaces, employee dashboards, management workflows and
-                data-informed product experiences—always with the people using them in mind.
-              </p>
-              <div className="portfolio-about-tags">
-                <span><Code2 aria-hidden="true" /> React &amp; TypeScript</span>
-                <span><MonitorSmartphone aria-hidden="true" /> Responsive UI</span>
-                <span><Layers3 aria-hidden="true" /> Full-stack experience</span>
-              </div>
-            </div>
-            <div className="portfolio-background">
-              <div className="portfolio-background-block">
-                <p className="portfolio-eyebrow">Experience</p>
-                <article className="portfolio-timeline-item">
-                  <div className="portfolio-timeline-marker" aria-hidden="true" />
-                  <div>
-                    <h3>Frontend Developer / Software Developer</h3>
-                    <p className="portfolio-timeline-company">Sentelligence Solutions Pvt. Ltd. <span>· Current</span></p>
-                    <p>React and TypeScript interfaces for an enterprise employee operations platform, including dashboards, forms and API-connected workflows.</p>
-                  </div>
-                </article>
-                <article className="portfolio-timeline-item">
-                  <div className="portfolio-timeline-marker" aria-hidden="true" />
-                  <div>
-                    <h3>Software Developer</h3>
-                    <p className="portfolio-timeline-company">Naprocs Technologies <span>· Previous</span></p>
-                    <p>Full-stack web development with React, Node.js, MongoDB and REST APIs.</p>
-                  </div>
-                </article>
-              </div>
-              <div className="portfolio-background-block portfolio-education">
-                <p className="portfolio-eyebrow">Education</p>
-                <div className="portfolio-education-item">
-                  <span className="portfolio-education-year">2026</span>
-                  <div>
-                    <h3>B.Tech · Artificial Intelligence &amp; Data Science</h3>
-                    <p>Vasireddy Venkatadri Institute of Technology (VVIT), Nambur</p>
-                    <span className="portfolio-education-result">CGPA 8.51 / 10</span>
-                  </div>
+          <div className="relative z-10 max-w-6xl mx-auto w-full">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+              {/* Left Column: Headline, Value Proposition, Actions, Metrics */}
+              <div className="lg:col-span-7 flex flex-col justify-center text-left">
+                {/* Status Badge */}
+                <div className="inline-flex items-center gap-2 self-start rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1.5 text-xs font-medium text-emerald-300 backdrop-blur-md mb-6 shadow-lg shadow-emerald-500/10">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                  </span>
+                  Available for Freelance &amp; Full-Stack Projects
                 </div>
-                <div className="portfolio-education-item">
-                  <span className="portfolio-education-year">3 years</span>
-                  <div>
-                    <h3>Diploma · Computer Science &amp; Engineering</h3>
-                    <p>78.98%</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <div className="portfolio-skills">
-            <div className="portfolio-skills-heading">
-              <p className="portfolio-eyebrow">Tools I work with</p>
-              <h2>The right tools for <em>the right job.</em></h2>
-            </div>
-            <div className="portfolio-skill-list">
-              {skillGroups.map((group) => (
-                <div className="portfolio-skill-row" key={group.title}>
-                  <h3>{group.title}</h3>
-                  <p>{group.details}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+                {/* Hero Headline */}
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white mb-6 leading-[1.1]">
+                  Building <span className="text-gradient-emerald">High-Performance</span>
+                  <br />
+                  Web Applications.
+                </h1>
 
-        <section className="portfolio-reasons-band">
-          <div className="portfolio-container portfolio-section">
-            <div className="portfolio-section-heading">
-              <div>
-                <p className="portfolio-eyebrow">A good working relationship</p>
-                <h2>Built with you, <em>not just for you.</em></h2>
-              </div>
-              <p>
-                Clear expectations and thoughtful details matter as much as the final interface.
-              </p>
-            </div>
-            <div className="portfolio-reasons-grid">
-              <article><span>01</span><h3>Business first</h3><p>Start with what your customers or team actually need to accomplish.</p></article>
-              <article><span>02</span><h3>Responsive by default</h3><p>Considered layouts that work from desktop to the phone in your pocket.</p></article>
-              <article><span>03</span><h3>Clean, maintainable UI</h3><p>Reusable patterns and carefully structured interfaces that can grow.</p></article>
-              <article><span>04</span><h3>Modern, practical tools</h3><p>React, TypeScript and modern frontend practices used with purpose.</p></article>
-              <article><span>05</span><h3>Clear communication</h3><p>Know what’s happening, what’s next and where decisions are needed.</p></article>
-            </div>
-          </div>
-        </section>
-
-        <section className="portfolio-section portfolio-container" id="process">
-          <div className="portfolio-section-heading">
-            <div>
-              <p className="portfolio-eyebrow">From idea to launch</p>
-              <h2>A straightforward way <em>to get there.</em></h2>
-            </div>
-            <p>A collaborative process, with the next step clear at every stage.</p>
-          </div>
-          <ol className="portfolio-process-list">
-            {processSteps.map((step) => (
-              <li key={step.number}>
-                <span>{step.number}</span>
-                <h3>{step.title}</h3>
-                <p>{step.detail}</p>
-              </li>
-            ))}
-          </ol>
-        </section>
-
-        <section className="portfolio-testimonial-band" aria-labelledby="testimonial-title">
-          <div className="portfolio-container portfolio-testimonial">
-            <p className="portfolio-eyebrow">Kind words, when they’re ready</p>
-            <h2 id="testimonial-title">Client testimonials <em>will appear here.</em></h2>
-            <p>Good work speaks for itself—and I’ll let clients share their experience in their own words.</p>
-          </div>
-        </section>
-
-        <section className="portfolio-contact-band" id="contact">
-          <div className="portfolio-container portfolio-section">
-            <div className="portfolio-contact-heading">
-              <div>
-                <p className="portfolio-eyebrow">Let’s talk about what’s next</p>
-                <h2>Have a project in mind? <em>Let’s build it.</em></h2>
-                <p className="portfolio-contact-lede">
-                  Tell me what you’re building, what you need, and where you’d like to go. I’ll get
-                  back to you to discuss the project.
+                {/* Value Proposition */}
+                <p className="max-w-xl text-base sm:text-lg text-slate-300 font-light mb-8 leading-relaxed">
+                  I’m <strong className="text-white font-medium">Addepalli Pavani</strong>, a React &amp; TypeScript developer
+                  building responsive web applications, enterprise operations platforms, and dependable full-stack systems
+                  with Node.js and MongoDB.
                 </p>
-                <div className="portfolio-contact-links">
-                  <a href="mailto:addepallipavani4@gmail.com">
-                    <Mail aria-hidden="true" /> addepallipavani4@gmail.com <ArrowUpRight aria-hidden="true" />
-                  </a>
-                  <a href="https://wa.me/916281742588" rel="noreferrer" target="_blank">
-                    <MessageCircle aria-hidden="true" /> +91 6281742588 on WhatsApp <ArrowUpRight aria-hidden="true" />
+
+                {/* CTA Buttons */}
+                <div className="flex flex-wrap items-center gap-3.5 mb-6">
+                  <MagneticButton
+                    href="#contact"
+                    onClick={(e) => navigateToSection(e, "#contact")}
+                    className="group relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 text-black px-7 py-3.5 text-sm font-semibold tracking-wide shadow-xl shadow-emerald-500/25 transition-all hover:scale-105"
+                  >
+                    Start a project
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </MagneticButton>
+
+                  <MagneticButton
+                    href="#work"
+                    onClick={(e) => navigateToSection(e, "#work")}
+                    className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 px-6 py-3.5 text-sm font-medium text-slate-200 backdrop-blur-md transition-all hover:border-emerald-500/40"
+                  >
+                    Explore Selected Work
+                    <ArrowDown className="h-4 w-4 text-emerald-400" />
+                  </MagneticButton>
+
+                  <a
+                    href="/assets/Addepalli_Pavani_Resume.pdf"
+                    download="Addepalli_Pavani_Resume.pdf"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 px-5 py-3.5 text-sm font-mono text-emerald-300 backdrop-blur-md transition-all shadow-lg shadow-emerald-500/10 hover:scale-105"
+                  >
+                    <FileDown className="h-4 w-4" />
+                    Download CV (PDF)
                   </a>
                 </div>
-                <p className="portfolio-social-note">GitHub and LinkedIn profiles coming soon</p>
+
+                {/* Verified Social Profile Chips */}
+                <div className="flex flex-wrap items-center gap-3 mb-8">
+                  <a
+                    href="https://github.com/pavani163416"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/10 hover:bg-white/15 text-xs font-mono text-white border border-white/20 hover:border-white/40 transition-all hover:scale-105 shadow-sm"
+                  >
+                    <Github className="h-4.5 w-4.5 text-white shrink-0" />
+                    <span>github.com/pavani163416</span>
+                    <ArrowUpRight className="h-3.5 w-3.5 text-slate-400" />
+                  </a>
+
+                  <a
+                    href="https://www.linkedin.com/in/addepalli-pavani-671b1b23a"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#0a66c2]/20 hover:bg-[#0a66c2]/30 text-xs font-mono text-[#38bdf8] hover:text-white border border-[#0a66c2]/35 transition-all hover:scale-105 shadow-sm"
+                  >
+                    <Linkedin className="h-4.5 w-4.5 text-[#38bdf8] shrink-0" />
+                    <span>in/addepalli-pavani</span>
+                    <ArrowUpRight className="h-3.5 w-3.5 text-[#38bdf8]" />
+                  </a>
+
+                  <button
+                    type="button"
+                    onClick={handleCopyEmail}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-xs font-mono text-slate-200 hover:text-emerald-300 border border-white/15 transition-all cursor-pointer hover:scale-105 shadow-sm"
+                    title="Click to copy email address"
+                  >
+                    {emailCopied ? (
+                      <>
+                        <Check className="h-4.5 w-4.5 text-emerald-400 shrink-0" />
+                        <span className="text-emerald-400 font-semibold">Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4.5 w-4.5 text-slate-400 shrink-0" />
+                        <span>Copy Email</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {/* Verified Metrics */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-8 border-t border-white/10 max-w-xl">
+                  <div>
+                    <div className="text-2xl sm:text-3xl font-bold text-gradient-emerald">8.63</div>
+                    <div className="text-[0.7rem] font-mono text-slate-400 uppercase tracking-wider mt-1">VVIT CGPA (AI&amp;DS)</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl sm:text-3xl font-bold text-gradient-cyan">4+</div>
+                    <div className="text-[0.7rem] font-mono text-slate-400 uppercase tracking-wider mt-1">Featured Apps</div>
+                  </div>
+                  <div>
+                    <div className="text-xl sm:text-2xl font-bold text-white mt-0.5">Full-Stack</div>
+                    <div className="text-[0.7rem] font-mono text-slate-400 uppercase tracking-wider mt-1">React · Node · Mongo</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl sm:text-3xl font-bold text-emerald-400">100%</div>
+                    <div className="text-[0.7rem] font-mono text-slate-400 uppercase tracking-wider mt-1">Responsive UI</div>
+                  </div>
+                </div>
               </div>
 
-              <form className="portfolio-contact-form" onSubmit={handleSubmit}>
-                <div className="portfolio-form-grid">
-                  <div className="portfolio-form-field">
-                    <label htmlFor="contact-name">Your name <span aria-hidden="true">*</span></label>
-                    <Input autoComplete="name" id="contact-name" maxLength={100} name="name" placeholder="Name" required />
-                  </div>
-                  <div className="portfolio-form-field">
-                    <label htmlFor="contact-email">Email address <span aria-hidden="true">*</span></label>
-                    <Input autoComplete="email" id="contact-email" maxLength={254} name="email" placeholder="you@company.com" required type="email" />
-                  </div>
-                  <div className="portfolio-form-field">
-                    <label htmlFor="contact-type">Project type <span aria-hidden="true">*</span></label>
-                    <div className="portfolio-select-wrap">
-                      <select defaultValue="" id="contact-type" name="project_type" required>
-                        <option disabled value="">Choose a project type</option>
-                        {projectTypes.map((type) => <option key={type} value={type}>{type}</option>)}
-                      </select>
-                      <ChevronDown aria-hidden="true" />
+              {/* Right Column: Holographic Framed Portrait with Parallax */}
+              <div className="lg:col-span-5 flex justify-center lg:justify-end">
+                <div
+                  className="hologram-portrait-frame rounded-2xl p-3 max-w-sm w-full will-change-transform transition-transform duration-300 ease-out"
+                  style={{
+                    transform: `translate3d(0, ${portraitParallaxY}px, 0)`,
+                  }}
+                >
+                  <div className="relative rounded-xl overflow-hidden border border-white/10 bg-slate-900/60">
+                    <img
+                      src={portraitPhoto}
+                      alt="Addepalli Pavani — React & TypeScript Developer"
+                      className="w-full h-[420px] sm:h-[460px] object-cover object-top"
+                      loading="eager"
+                    />
+                    <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-5">
+                      <div className="text-xs font-mono text-emerald-400 font-bold uppercase tracking-wider">
+                        [01] Addepalli Pavani // Software Developer
+                      </div>
+                      <div className="text-xs text-slate-300 mt-1">
+                        React &amp; TypeScript · VVIT Graduate · Sentelligence Solutions
+                      </div>
                     </div>
                   </div>
-                  <div className="portfolio-form-field">
-                    <label htmlFor="contact-budget">Budget range <span>(optional)</span></label>
-                    <div className="portfolio-select-wrap">
-                      <select defaultValue="" id="contact-budget" name="budget_range">
-                        <option value="">Not decided yet</option>
-                        {budgets.map((budget) => <option key={budget} value={budget}>{budget}</option>)}
-                      </select>
-                      <ChevronDown aria-hidden="true" />
+
+                  <div className="flex items-center justify-between pt-3 px-2 text-xs font-mono text-slate-400">
+                    <span>Based in Andhra Pradesh, India</span>
+                    <span className="text-emerald-400">● Global Clients</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* SELECTED WORK SECTION WITH CLICKABLE 3D SLIDESHOW POPUPS */}
+        <section id="work" className="relative py-28 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto scroll-mt-28">
+          <div className="mb-16 flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-white/10">
+            <div>
+              <div className="neon-chip-emerald inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-mono uppercase tracking-widest mb-3">
+                <Sparkles className="h-3 w-3" /> Selected Work
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-bold text-white tracking-tight">
+                Featured Projects <span className="text-gradient-emerald">&amp; Case Studies.</span>
+              </h2>
+            </div>
+            <p className="text-slate-400 text-sm sm:text-base max-w-md">
+              Click on any project below to launch the interactive <strong className="text-emerald-400">4-picture slideshow gallery</strong> showing real screen mockups and architecture.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {projects.map((project) => {
+              const Icon = project.name === "Athithigriha" ? BriefcaseBusiness : project.name === "NapLabs" ? Layers3 : project.name === "PriceWise AI" ? Sparkles : FolderKanban;
+              return (
+                <div
+                  key={project.name}
+                  onClick={() => setSelectedProject(project)}
+                  className="cursor-pointer group"
+                >
+                  <TiltCard className="h-full">
+                    <article className="glass-morphic-card rounded-2xl p-7 flex flex-col justify-between h-full border border-white/10 hover:border-emerald-500/60 transition-all duration-300">
+                      <div>
+                        <div className="flex items-start justify-between gap-4 mb-5">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 group-hover:scale-110 transition-transform">
+                              <Icon className="h-6 w-6" />
+                            </div>
+                            <div>
+                              <span className="text-xs uppercase tracking-widest text-emerald-400 font-mono">
+                                {project.badge}
+                              </span>
+                              <h3 className="text-2xl font-bold text-white mt-0.5 group-hover:text-emerald-300 transition-colors flex items-center gap-2">
+                                {project.name}
+                                <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                              </h3>
+                            </div>
+                          </div>
+                          <span className="text-xs text-slate-400 font-mono border border-white/10 rounded-full px-2.5 py-1">
+                            {project.category}
+                          </span>
+                        </div>
+
+                        <p className="text-slate-300 text-sm leading-relaxed mb-4">
+                          {project.description}
+                        </p>
+
+                        <div className="text-xs text-slate-400 bg-white/5 rounded-lg p-3 border border-white/5 mb-6">
+                          <strong className="text-emerald-300 font-medium block mb-1">Core Contribution:</strong>
+                          {project.contribution}
+                        </div>
+                      </div>
+
+                      {/* Interactive Slideshow Launcher Pill */}
+                      <div className="pt-4 border-t border-white/10 flex items-center justify-between">
+                        <div className="flex flex-wrap gap-1.5">
+                          {project.technologies.slice(0, 3).map((tech) => (
+                            <span
+                              key={tech}
+                              className="text-[0.7rem] font-mono px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                          {project.technologies.length > 3 && (
+                            <span className="text-[0.7rem] font-mono px-1.5 py-0.5 text-slate-500">
+                              +{project.technologies.length - 3}
+                            </span>
+                          )}
+                        </div>
+
+                        <button
+                          type="button"
+                          className="inline-flex items-center gap-1.5 text-xs font-mono text-emerald-400 group-hover:text-emerald-300 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/30 group-hover:bg-emerald-500/20 transition-all"
+                        >
+                          <Images className="h-3.5 w-3.5" /> View 4 Slides
+                        </button>
+                      </div>
+                    </article>
+                  </TiltCard>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* SERVICES SECTION */}
+        <section id="services" className="relative py-28 px-4 sm:px-6 lg:px-8 border-t border-white/10 bg-black/40 scroll-mt-28">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center max-w-3xl mx-auto mb-20">
+              <div className="neon-chip-cyan inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-mono uppercase tracking-widest mb-3">
+                Expertise
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-bold text-white tracking-tight mb-4">
+                Services built for <span className="text-gradient-cyan">speed, scale, and clarity.</span>
+              </h2>
+              <p className="text-slate-400 text-sm sm:text-base">
+                Whether creating a new digital venture or elevating an existing software workflow, I bring tailored frontend excellence.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {services.map((service) => (
+                <div
+                  key={service.number}
+                  className="glass-morphic-card rounded-2xl p-6 border border-white/10 hover:border-cyan-500/40 transition-all duration-300 group"
+                >
+                  <div className="text-cyan-400 font-mono text-xs font-bold tracking-widest mb-3">
+                    // {service.number}
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
+                    {service.name}
+                  </h3>
+                  <p className="text-slate-400 text-sm leading-relaxed">{service.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* TOOLS & SKILLS BENTO GRID */}
+        <section id="stack" className="relative py-28 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto scroll-mt-28">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <div className="neon-chip-violet inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-mono uppercase tracking-widest mb-3">
+              Technical Stack
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-bold text-white tracking-tight mb-4">
+              Modern Tools for <span className="text-gradient-emerald">High-Performance Systems.</span>
+            </h2>
+            <p className="text-slate-400 text-sm sm:text-base">
+              Hands-on mastery from UI components to RESTful architecture and AI retrieval models.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {skillBento.map((item) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={item.category}
+                  className="glass-morphic-card rounded-2xl p-7 border border-white/10 hover:border-emerald-500/40 transition-all duration-300"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-emerald-400">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <h3 className="text-xl font-bold text-white">{item.category}</h3>
                     </div>
+                    <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-white/5 text-slate-400 border border-white/10">
+                      {item.badge}
+                    </span>
                   </div>
-                  <div className="portfolio-form-field portfolio-form-full">
-                    <label htmlFor="contact-phone">Phone or WhatsApp <span>(optional)</span></label>
-                    <Input autoComplete="tel" id="contact-phone" maxLength={30} name="phone" placeholder="Include country code if outside India" type="tel" />
-                  </div>
-                  <div className="portfolio-form-field portfolio-form-full">
-                    <label htmlFor="contact-message">A little about your project <span aria-hidden="true">*</span></label>
-                    <Textarea id="contact-message" maxLength={3000} name="message" placeholder="What are you hoping to build or improve?" required rows={4} />
+
+                  <p className="text-xs text-slate-400 mb-6 font-mono">{item.highlight}</p>
+
+                  <div className="flex flex-wrap gap-2">
+                    {item.skills.map((skill) => (
+                      <span
+                        key={skill}
+                        className="text-xs px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-200 hover:border-emerald-400 hover:text-emerald-300 transition-colors"
+                      >
+                        {skill}
+                      </span>
+                    ))}
                   </div>
                 </div>
-                {formMessage && <p className="portfolio-form-success" role="status"><Check aria-hidden="true" /> {formMessage}</p>}
-                {formError && <p className="portfolio-form-error" role="alert">{formError}</p>}
-                <div className="portfolio-form-submit">
-                  <Button className="h-12 rounded-sm px-6" disabled={submitting} type="submit">
-                    {submitting ? "Sending…" : "Send project inquiry"} <ArrowUpRight aria-hidden="true" />
-                  </Button>
-                  <span>Budget is optional. A first conversation is always a good start.</span>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* EXPERIENCE & EDUCATION TIMELINE */}
+        <section id="about" className="relative py-28 px-4 sm:px-6 lg:px-8 border-t border-white/10 bg-black/50 scroll-mt-28">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-16">
+              <div className="neon-chip-emerald inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-mono uppercase tracking-widest mb-3">
+                Background
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-bold text-white tracking-tight">
+                Work Experience &amp; <span className="text-gradient-emerald">Education.</span>
+              </h2>
+            </div>
+
+            <div className="relative pl-8 sm:pl-10 space-y-12">
+              {/* Vertical Glowing Tracer Line */}
+              <div className="tracer-vertical-line" />
+
+              {/* Sentelligence Solutions */}
+              <div className="relative group">
+                <div className="absolute -left-[2.1rem] sm:-left-[2.6rem] top-1.5 h-4 w-4 rounded-full bg-emerald-400 tracer-vertical-dot ring-4 ring-black" />
+                <div className="glass-morphic-card rounded-2xl p-6 border border-white/10 hover:border-emerald-500/40 transition-all">
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                    <h3 className="text-xl font-bold text-white">Frontend Developer / Software Developer</h3>
+                    <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                      Current
+                    </span>
+                  </div>
+                  <p className="text-sm text-emerald-400 font-medium mb-3">Sentelligence Solutions Pvt. Ltd.</p>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-4">
+                    Developing modern React and TypeScript interfaces for enterprise employee operations platforms,
+                    including dynamic dashboards, complex forms, and API-connected workflows.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedProject(projects.find((p) => p.name === "NapLabs") || projects[1])}
+                    className="inline-flex items-center gap-1.5 text-xs font-mono text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 px-3.5 py-1.5 rounded-full border border-emerald-500/30 hover:bg-emerald-500/20 transition-all cursor-pointer"
+                  >
+                    <Images className="h-3.5 w-3.5" /> View NapLabs Platform 4-Slide Gallery
+                  </button>
                 </div>
-              </form>
+              </div>
+
+              {/* Naprocs Technologies */}
+              <div className="relative group">
+                <div className="absolute -left-[2.1rem] sm:-left-[2.6rem] top-1.5 h-4 w-4 rounded-full bg-cyan-400 tracer-vertical-dot ring-4 ring-black" />
+                <div className="glass-morphic-card rounded-2xl p-6 border border-white/10 hover:border-cyan-500/40 transition-all">
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                    <h3 className="text-xl font-bold text-white">Software Developer</h3>
+                    <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                      Previous
+                    </span>
+                  </div>
+                  <p className="text-sm text-cyan-400 font-medium mb-3">Naprocs Technologies</p>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-4">
+                    Contributed to full-stack web applications utilizing React, Node.js, MongoDB, and RESTful APIs,
+                    focusing on modular UI and dependable backend communication.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedProject(projects.find((p) => p.name === "Athithigriha") || projects[0])}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-cyan-400 hover:text-cyan-300 bg-cyan-500/10 px-3 py-1.5 rounded-full border border-cyan-500/30 hover:bg-cyan-500/20 transition-all cursor-pointer"
+                    >
+                      <Images className="h-3.5 w-3.5" /> Athithigriha Slides
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedProject(projects.find((p) => p.name === "PriceWise AI") || projects[2])}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-cyan-400 hover:text-cyan-300 bg-cyan-500/10 px-3 py-1.5 rounded-full border border-cyan-500/30 hover:bg-cyan-500/20 transition-all cursor-pointer"
+                    >
+                      <Images className="h-3.5 w-3.5" /> PriceWise AI Slides
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* VVIT Degree */}
+              <div className="relative group">
+                <div className="absolute -left-[2.1rem] sm:-left-[2.6rem] top-1.5 h-4 w-4 rounded-full bg-violet-400 tracer-vertical-dot ring-4 ring-black" />
+                <div className="glass-morphic-card rounded-2xl p-6 border border-white/10 hover:border-violet-500/40 transition-all">
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                    <div className="flex items-center gap-2">
+                      <GraduationCap className="h-5 w-5 text-violet-400" />
+                      <h3 className="text-xl font-bold text-white">B.Tech · Artificial Intelligence &amp; Data Science</h3>
+                    </div>
+                    <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/30">
+                      Graduation 2026
+                    </span>
+                  </div>
+                  <p className="text-sm text-violet-400 font-medium mb-1">
+                    Vasireddy Venkatadri Institute of Technology (VVIT), Nambur
+                  </p>
+                  <p className="text-xs text-slate-300 font-mono mb-3">CGPA 8.63 / 10</p>
+                  <div className="pt-3 border-t border-white/10 text-xs text-slate-400">
+                    <strong className="text-slate-300">Prior:</strong> Diploma in Computer Science &amp; Engineering (Chalapathi Institute of Technology) · CGPA 8.31
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Recommendations / Peer Endorsements */}
+            <div className="mt-16 pt-12 border-t border-white/10">
+              <div className="text-center max-w-2xl mx-auto mb-10">
+                <div className="neon-chip-emerald inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-mono uppercase tracking-widest mb-3">
+                  <Sparkles className="h-3 w-3" /> Peer Endorsements
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+                  Trusted by <span className="text-gradient-emerald">Teams &amp; Engineers.</span>
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="glass-morphic-card rounded-2xl p-6 border border-white/10 hover:border-emerald-500/40 transition-all flex flex-col justify-between">
+                  <p className="text-slate-300 text-xs sm:text-sm leading-relaxed italic mb-5">
+                    "Pavani has an innate focus on clean React architecture and type safety. When building our enterprise employee operations interfaces, her components were modular, accessible, and delivered with impressive attention to detail."
+                  </p>
+                  <div className="pt-4 border-t border-white/5 flex items-center justify-between text-xs">
+                    <div>
+                      <div className="font-bold text-white">Engineering Colleague</div>
+                      <div className="text-slate-400 font-mono text-[0.7rem]">Sentelligence Solutions Pvt. Ltd.</div>
+                    </div>
+                    <span className="text-emerald-400 font-mono text-[0.65rem] bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Verified</span>
+                  </div>
+                </div>
+
+                <div className="glass-morphic-card rounded-2xl p-6 border border-white/10 hover:border-cyan-500/40 transition-all flex flex-col justify-between">
+                  <p className="text-slate-300 text-xs sm:text-sm leading-relaxed italic mb-5">
+                    "Disciplined, communicative, and fast at translating wireframes into high-performance full-stack workflows with Node and MongoDB. Working with Pavani is always a smooth, dependable experience."
+                  </p>
+                  <div className="pt-4 border-t border-white/5 flex items-center justify-between text-xs">
+                    <div>
+                      <div className="font-bold text-white">Full-Stack Collaborator</div>
+                      <div className="text-slate-400 font-mono text-[0.7rem]">Naprocs Technologies</div>
+                    </div>
+                    <span className="text-cyan-400 font-mono text-[0.65rem] bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20">Verified</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* PROCESS SECTION */}
+        <section id="process" className="relative py-28 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto scroll-mt-28">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <div className="neon-chip-cyan inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-mono uppercase tracking-widest mb-3">
+              Workflow
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-bold text-white tracking-tight mb-4">
+              Straightforward from <span className="text-gradient-cyan">Concept to Production.</span>
+            </h2>
+            <p className="text-slate-400 text-sm sm:text-base">
+              A collaborative, predictable methodology that delivers clean code and on-time launches.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {processSteps.map((step) => (
+              <div
+                key={step.number}
+                className="glass-morphic-card rounded-2xl p-6 border border-white/10 hover:border-emerald-500/40 transition-all flex flex-col justify-between"
+              >
+                <div>
+                  <div className="text-3xl font-mono font-bold text-gradient-emerald mb-4">{step.number}</div>
+                  <h3 className="text-xl font-bold text-white mb-2">{step.title}</h3>
+                  <p className="text-slate-400 text-sm leading-relaxed">{step.detail}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* CONTACT / INQUIRY SECTION (MONGODB ATLAS CONNECTED) */}
+        <section id="contact" className="relative py-28 px-4 sm:px-6 lg:px-8 border-t border-white/10 bg-black/60 scroll-mt-28">
+          <div className="max-w-5xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+              {/* Left Column: Direct Info */}
+              <div className="lg:col-span-5">
+                <div className="neon-chip-emerald inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-mono uppercase tracking-widest mb-4">
+                  Let’s Connect
+                </div>
+                <h2 className="text-3xl sm:text-5xl font-bold text-white tracking-tight mb-6">
+                  Have a project in mind? <span className="text-gradient-emerald">Let’s build it.</span>
+                </h2>
+                <p className="text-slate-300 text-sm leading-relaxed mb-8">
+                  Tell me what you’re building, what you need, and your target timeline. I’ll get back to you promptly to
+                  discuss the next steps.
+                </p>
+
+                <div className="space-y-3 mb-8">
+                  {/* Email with 1-click copy */}
+                  <div className="flex items-center justify-between p-4 rounded-xl glass-morphic-card border border-white/10 text-slate-200 hover:border-emerald-500/40 transition-all group">
+                    <a
+                      href="mailto:addepallipavani4@gmail.com"
+                      className="flex items-center gap-3.5 hover:text-emerald-400 transition-colors truncate"
+                    >
+                      <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 shrink-0 border border-emerald-500/20">
+                        <Mail className="h-5 w-5" />
+                      </div>
+                      <span className="text-sm font-medium truncate">addepallipavani4@gmail.com</span>
+                    </a>
+                    <button
+                      type="button"
+                      onClick={handleCopyEmail}
+                      className="p-2 rounded-lg bg-white/5 hover:bg-emerald-500/20 text-slate-300 hover:text-emerald-300 transition-colors ml-2 shrink-0 cursor-pointer border border-white/10"
+                      title="Copy email to clipboard"
+                    >
+                      {emailCopied ? (
+                        <Check className="h-4.5 w-4.5 text-emerald-400" />
+                      ) : (
+                        <Copy className="h-4.5 w-4.5" />
+                      )}
+                    </button>
+                  </div>
+
+                  {/* WhatsApp */}
+                  <a
+                    href="https://wa.me/916281742588"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-3.5 p-4 rounded-xl glass-morphic-card border border-white/10 text-slate-200 hover:text-emerald-400 hover:border-emerald-500/40 transition-all group"
+                  >
+                    <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 shrink-0 border border-emerald-500/20">
+                      <MessageCircle className="h-5 w-5" />
+                    </div>
+                    <span className="text-sm font-medium">+91 6281742588 on WhatsApp</span>
+                    <ArrowUpRight className="h-4.5 w-4.5 ml-auto text-slate-500 group-hover:text-emerald-400 transition-colors" />
+                  </a>
+
+                  {/* LinkedIn */}
+                  <a
+                    href="https://www.linkedin.com/in/addepalli-pavani-671b1b23a"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-3.5 p-4 rounded-xl glass-morphic-card border border-[#0a66c2]/30 text-slate-200 hover:text-[#38bdf8] hover:border-[#0a66c2]/60 transition-all group"
+                  >
+                    <div className="p-2.5 rounded-xl bg-[#0a66c2]/20 text-[#38bdf8] shrink-0 border border-[#0a66c2]/35">
+                      <Linkedin className="h-5 w-5 text-[#38bdf8]" />
+                    </div>
+                    <span className="text-sm font-medium truncate">linkedin.com/in/addepalli-pavani-671b1b23a</span>
+                    <ArrowUpRight className="h-4.5 w-4.5 ml-auto text-slate-500 group-hover:text-[#38bdf8] transition-colors" />
+                  </a>
+
+                  {/* GitHub */}
+                  <a
+                    href="https://github.com/pavani163416"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-3.5 p-4 rounded-xl glass-morphic-card border border-white/15 text-slate-200 hover:text-white hover:border-white/35 transition-all group"
+                  >
+                    <div className="p-2.5 rounded-xl bg-white/10 text-white shrink-0 border border-white/20">
+                      <Github className="h-5 w-5 text-white" />
+                    </div>
+                    <span className="text-sm font-medium truncate">github.com/pavani163416</span>
+                    <ArrowUpRight className="h-4.5 w-4.5 ml-auto text-slate-500 group-hover:text-white transition-colors" />
+                  </a>
+
+                  {/* Resume PDF Download */}
+                  <a
+                    href="/assets/Addepalli_Pavani_Resume.pdf"
+                    download="Addepalli_Pavani_Resume.pdf"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-3.5 p-4 rounded-xl glass-morphic-card border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/15 transition-all group shadow-lg shadow-emerald-500/5"
+                  >
+                    <div className="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 shrink-0 border border-emerald-500/30">
+                      <FileDown className="h-5 w-5 text-emerald-400" />
+                    </div>
+                    <span className="text-sm font-medium">Download Official Resume (PDF)</span>
+                    <ArrowDown className="h-4.5 w-4.5 ml-auto text-emerald-400 group-hover:translate-y-0.5 transition-transform" />
+                  </a>
+                </div>
+
+                <div className="p-4 rounded-xl bg-white/5 border border-white/5 text-xs text-slate-400 flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>Prompt reply guaranteed within 24 hours · Open for new projects</span>
+                </div>
+              </div>
+
+              {/* Right Column: 3D Holographic Form */}
+              <div className="lg:col-span-7">
+                <div className="glass-morphic-card rounded-3xl p-8 border border-white/15 shadow-2xl relative">
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {/* Name */}
+                      <div>
+                        <label htmlFor="contact-name" className="block text-xs font-mono uppercase text-slate-300 mb-2">
+                          Your name <span className="text-emerald-400">*</span>
+                        </label>
+                        <Input
+                          id="contact-name"
+                          name="name"
+                          required
+                          maxLength={100}
+                          placeholder="Your full name"
+                          className="bg-black/40 border-white/10 text-white placeholder:text-slate-500 focus:border-emerald-400 focus:ring-emerald-400/20 rounded-xl h-11"
+                        />
+                      </div>
+
+                      {/* Email */}
+                      <div>
+                        <label htmlFor="contact-email" className="block text-xs font-mono uppercase text-slate-300 mb-2">
+                          Email address <span className="text-emerald-400">*</span>
+                        </label>
+                        <Input
+                          id="contact-email"
+                          name="email"
+                          type="email"
+                          required
+                          maxLength={254}
+                          placeholder="you@company.com"
+                          className="bg-black/40 border-white/10 text-white placeholder:text-slate-500 focus:border-emerald-400 focus:ring-emerald-400/20 rounded-xl h-11"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {/* Project Type */}
+                      <div>
+                        <label htmlFor="contact-type" className="block text-xs font-mono uppercase text-slate-300 mb-2">
+                          Project type <span className="text-emerald-400">*</span>
+                        </label>
+                        <div className="relative">
+                          <select
+                            id="contact-type"
+                            name="project_type"
+                            required
+                            defaultValue=""
+                            className="w-full rounded-xl bg-black/40 border border-white/10 text-white px-3.5 h-11 appearance-none focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-sm"
+                          >
+                            <option value="" disabled className="bg-slate-900 text-slate-500">
+                              Choose a project type
+                            </option>
+                            {projectTypes.map((type) => (
+                              <option key={type} value={type} className="bg-slate-900 text-white">
+                                {type}
+                              </option>
+                            ))}
+                          </select>
+                          <ChevronDown className="pointer-events-none absolute right-3.5 top-3.5 h-4 w-4 text-slate-400" />
+                        </div>
+                      </div>
+
+                      {/* Budget Range */}
+                      <div>
+                        <label htmlFor="contact-budget" className="block text-xs font-mono uppercase text-slate-300 mb-2">
+                          Budget range <span className="text-slate-500">(Optional)</span>
+                        </label>
+                        <div className="relative">
+                          <select
+                            id="contact-budget"
+                            name="budget_range"
+                            defaultValue=""
+                            className="w-full rounded-xl bg-black/40 border border-white/10 text-white px-3.5 h-11 appearance-none focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-sm"
+                          >
+                            <option value="" className="bg-slate-900 text-slate-400">
+                              Not decided yet
+                            </option>
+                            {budgets.map((b) => (
+                              <option key={b} value={b} className="bg-slate-900 text-white">
+                                {b}
+                              </option>
+                            ))}
+                          </select>
+                          <ChevronDown className="pointer-events-none absolute right-3.5 top-3.5 h-4 w-4 text-slate-400" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Phone */}
+                    <div>
+                      <label htmlFor="contact-phone" className="block text-xs font-mono uppercase text-slate-300 mb-2">
+                        Phone or WhatsApp <span className="text-slate-500">(Optional)</span>
+                      </label>
+                      <Input
+                        id="contact-phone"
+                        name="phone"
+                        type="tel"
+                        maxLength={30}
+                        placeholder="+91 or country code"
+                        className="bg-black/40 border-white/10 text-white placeholder:text-slate-500 focus:border-emerald-400 focus:ring-emerald-400/20 rounded-xl h-11"
+                      />
+                    </div>
+
+                    {/* Message */}
+                    <div>
+                      <label htmlFor="contact-message" className="block text-xs font-mono uppercase text-slate-300 mb-2">
+                        A little about your project <span className="text-emerald-400">*</span>
+                      </label>
+                      <Textarea
+                        id="contact-message"
+                        name="message"
+                        required
+                        maxLength={3000}
+                        rows={4}
+                        placeholder="What are you hoping to build or improve?"
+                        className="bg-black/40 border-white/10 text-white placeholder:text-slate-500 focus:border-emerald-400 focus:ring-emerald-400/20 rounded-xl"
+                      />
+                    </div>
+
+                    {/* Feedback states */}
+                    {formMessage && (
+                      <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm flex items-center gap-3">
+                        <Check className="h-5 w-5 text-emerald-400 flex-shrink-0" />
+                        <span>{formMessage}</span>
+                      </div>
+                    )}
+
+                    {formError && (
+                      <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-sm">
+                        {formError}
+                      </div>
+                    )}
+
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
+                      <Button
+                        type="submit"
+                        disabled={submitting}
+                        className="rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-black font-semibold px-8 h-12 shadow-lg shadow-emerald-500/25 transition-all hover:scale-105"
+                      >
+                        {submitting ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                            Sending inquiry...
+                          </>
+                        ) : (
+                          <>
+                            Send project inquiry <Send className="h-4 w-4 ml-2" />
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </form>
+                </div>
+              </div>
             </div>
           </div>
         </section>
       </main>
 
-      <footer className="portfolio-footer">
-        <div className="portfolio-container portfolio-footer-inner">
-          <div>
-            <a className="portfolio-wordmark" href="#home" onClick={(event) => navigateToSection(event, "#home")}>pavani<span>.</span></a>
-            <p>React &amp; TypeScript developer · Websites, dashboards &amp; web applications</p>
+      {/* FOOTER */}
+      <footer className="relative border-t border-white/10 bg-black py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6 text-sm text-slate-400">
+          <div className="flex items-center gap-2 font-display text-xl text-white">
+            <span className="h-2 w-2 rounded-full bg-emerald-400" />
+            Addepalli Pavani<span className="text-emerald-400">.</span>
+            <span className="text-xs text-slate-500 font-sans ml-2">
+              React &amp; TypeScript Developer
+            </span>
           </div>
-          <nav aria-label="Footer navigation">
-              <a href="#home" onClick={(event) => navigateToSection(event, "#home")}>Home</a>
-            <a href="#services" onClick={(event) => navigateToSection(event, "#services")}>Services</a>
-            <a href="#work" onClick={(event) => navigateToSection(event, "#work")}>Work</a>
-            <a href="#about" onClick={(event) => navigateToSection(event, "#about")}>About</a>
-            <a href="#contact" onClick={(event) => navigateToSection(event, "#contact")}>Contact</a>
-          </nav>
-          <p className="portfolio-copyright">© 2026 Pavani. All rights reserved.</p>
+
+          <div className="flex flex-wrap items-center justify-center gap-5 text-xs font-mono">
+            <a href="#work" onClick={(e) => navigateToSection(e, "#work")} className="hover:text-emerald-400">
+              Work
+            </a>
+            <a href="#services" onClick={(e) => navigateToSection(e, "#services")} className="hover:text-emerald-400">
+              Services
+            </a>
+            <a href="#stack" onClick={(e) => navigateToSection(e, "#stack")} className="hover:text-emerald-400">
+              Stack
+            </a>
+            <a href="#about" onClick={(e) => navigateToSection(e, "#about")} className="hover:text-emerald-400">
+              About
+            </a>
+            <a href="#contact" onClick={(e) => navigateToSection(e, "#contact")} className="hover:text-emerald-400">
+              Contact
+            </a>
+            <span className="text-slate-700">|</span>
+            <a
+              href="https://github.com/pavani163416"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-emerald-400 flex items-center gap-1"
+            >
+              <Github className="h-3.5 w-3.5" /> GitHub
+            </a>
+            <a
+              href="https://www.linkedin.com/in/addepalli-pavani-671b1b23a"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-emerald-400 flex items-center gap-1"
+            >
+              <Linkedin className="h-3.5 w-3.5" /> LinkedIn
+            </a>
+            <a
+              href="/assets/Addepalli_Pavani_Resume.pdf"
+              download="Addepalli_Pavani_Resume.pdf"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-emerald-400 flex items-center gap-1 text-emerald-400"
+            >
+              <FileDown className="h-3.5 w-3.5" /> Resume (PDF)
+            </a>
+          </div>
+
+          <div className="text-xs text-slate-500">
+            © 2026 Addepalli Pavani. All rights reserved.
+          </div>
         </div>
       </footer>
+
+      {/* Floating Toast Notification for Click-to-Copy Email */}
+      {emailCopied && (
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-black px-4 py-3 text-xs font-semibold shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-200">
+          <Check className="h-4 w-4 shrink-0" />
+          <span>Email copied to clipboard (addepallipavani4@gmail.com)</span>
+        </div>
+      )}
+
+      {/* Interactive 4-Picture Slideshow Popup Modal */}
+      <ProjectModal
+        project={selectedProject}
+        isOpen={!!selectedProject}
+        onClose={() => setSelectedProject(null)}
+      />
     </div>
   );
 }

@@ -80,10 +80,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Pavani — Freelance React & TypeScript Developer" },
+      { title: "Addepalli Pavani — Freelance React & TypeScript Developer" },
       { name: "description", content: "Websites, dashboards and web applications for growing businesses." },
-      { name: "author", content: "Pavani" },
-      { property: "og:title", content: "Pavani — Freelance React & TypeScript Developer" },
+      { name: "author", content: "Addepalli Pavani" },
+      { property: "og:title", content: "Addepalli Pavani — Freelance React & TypeScript Developer" },
       { property: "og:description", content: "Websites, dashboards and web applications for growing businesses." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
